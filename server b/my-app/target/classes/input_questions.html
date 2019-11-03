@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body{
+          text-align: center;
+          background-color: #f1f1f1;
+        }
+        nav{
+          padding: 20px;
+        }
+        nav a{
+          padding: 20px;
+        }
+        a{
+          text-decoration: none;
+        }
+        form{
+          padding: 20px;
+        }
+        form input {
+          padding:10px;
+          margin : 0px;
+          width: 30%;
+        }
+        form i{
+          position: absolute;
+          padding: 10px;
+        }
+        #form-name{
+          padding:20px;
+          margin:0px;
+          font-size:25px;
+          letter-spacing: 3px;
+        }
+        #access_rules_btn,form #add-btn{
+          width : 15%;
+          background-color: white;
+          color: black;
+          border: 2px solid #e7e7e7;
+          margin:10px;
+          padding: 10px;
+        }
+         form #add-btn-2{
+          width : 30%;
+          background-color: white;
+          color: black;
+          border: 2px solid #e7e7e7;
+          margin:10px;
+          padding: 10px;
+        }
+        iframe{
+          display: none;
+        }
+
+
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+      </style>
+</head>
+
+<body>
+<nav>
+    <a href="./index.html">Home</a> |
+    <a href="./get_questions.html">Get Quiz</a>
+</nav>
+
+<p id= "form-name">Question Data:</p>
+
+<form id="question_details" action='/add_question'  > <!-- method="POST" -->
+    <input type="text" name="question" placeholder="Enter Question"  required onkeydown="clear_output()"/> <br>
+    <input type="text" name="opt_a" placeholder="Enter option a" required/> <br>
+    <input type="text" name="opt_b" placeholder="Enter option b" required/> <br>
+    <input type="text" name="opt_c" placeholder="Enter option c" required/><br>
+    <input type="text" name="opt_d" placeholder="Enter option d" required/><br> <br>
+    <span>Correct Option :</span>
+    <select name="correct_opt" required>
+        <option value="a">a</option>
+        <option value="b">b</option>
+        <option value="c">c</option>
+        <option value="d">d</option>
+    </select><br><br>
+    <span>Weight of Question : </span>
+    <select name="weight" required>
+        <option value="1">Easy - 1 marks</option>
+        <option value="2">Medium - 2 marks</option>
+        <option value="3">Hard - 3 marks</option>
+    </select><br>
+    <input type="submit" value = "Add Question" onclick="validate_send()" id="add-btn"/>
+</form>
+
+
+<!-- The Modal -->
+<button id="access_rules_btn">Set Access Code Rules</button>
+
+<div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <form id="access_code_form" action="/set_access_rules">
+            <input type="text" name = "access_code" id = "access_code_show"/><br>
+            <input type="number" name="easy"  placeholder="Number of easy questions" required onkeyup="validate_rule(this,1,n_easy)"/><span id = "n_easy"></span><br>
+            <input type="number" name="medium" placeholder="Number of medium questions" required onkeyup="validate_rule(this,2,n_medium)"/><span id = "n_medium"></span><br>
+            <input type="number" name="hard" placeholder="Number of hard questions" required onkeyup="validate_rule(this,3,n_hard)"/><span id = "n_hard"></span><br>
+            <input type="submit" value = "Set/Update Access Code Rules" onclick="reflect_success()" id="add-btn-2"/>
+        </form>
+        <p id="reflect_success_output"></p>
+    </div>
+</div>
+<!--Modal Closed -->
+
+<p id ="add_question_output" ></p>
+
+
+<script>
+
+    // validate access rules
+
+    function validate_rule(input,weight,span){
+
+            var url = "/validate_rules";
+            var data = "input="+input.value+"&weight="+weight;
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                span.innerHTML = this.responseText;
+              }
+            };
+            xhttp.open("POST", url, true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send(data);
+    }
+
+
+    // Get the modal
+    var modal = document.getElementById('myModal');
+
+    // Get the button that opens the modal
+    var btn = document.getElementById("access_rules_btn");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on the button, open the modal
+    btn.onclick = function() {
+        modal.style.display = "block";
+        fill_access_code();
+    }
+
+    function fill_access_code(){
+        var access_code_show = document.getElementById("access_code_show");
+        var url = "/get_access_code";
+        var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                access_code_show.value = "Access Code is " + this.responseText;
+              }
+            };
+            xhttp.open("GET", url, true);
+            xhttp.send();
+    }
+
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    function validate_send() {
+          var form = document.getElementById("question_details");
+           if(form.checkValidity()){
+              event.preventDefault();
+              var ques , a, b, c, d ,c_opt , w, output;
+
+              output = document.getElementById("add_question_output");
+              ques = form["question"].value;
+              a = form["opt_a"].value;
+              b = form["opt_b"].value;
+              c = form["opt_c"].value;
+              d = form["opt_d"].value;
+              c_opt = form["correct_opt"].value;
+              w = form["weight"].value;
+
+            // data post
+            var url = form.action;
+            var data = "question="+ques+"&opt_a="+a+"&opt_b="+b+"&opt_c="+c+"&opt_d="+d+"&correct_opt="+c_opt+"&weight="+w;
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                output.innerHTML = this.responseText;
+                form.reset();
+              }
+            };
+            xhttp.open("POST", url, true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send(data);
+          }
+        };
+
+	function clear_output(){
+	  var output = document.getElementById("add_question_output");
+	  output.innerHTML = "";
+	}
+
+    function reflect_success(){
+        var form = document.getElementById("access_code_form");
+           if(form.checkValidity()){
+              event.preventDefault();
+              var easy, medium, hard;
+
+              var output = document.getElementById("reflect_success_output");
+
+              easy = form["easy"].value;
+              medium = form["medium"].value;
+              hard = form["hard"].value;
+
+
+            // data post
+            var url = form.action;
+            var data = "easy="+easy+"&medium="+medium+"&hard="+hard;
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+              if (this.readyState == 4 && this.status == 200) {
+               output.innerHTML = this.responseText;
+              }
+            };
+            xhttp.open("POST", url, true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send(data);
+          }
+    };
+</script>
+<iframe name="frame"></iframe>
+</body>
+</html>

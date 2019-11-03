@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body{
+          text-align: center;
+          background-color: #f1f1f1;
+        }
+        nav{
+          padding: 20px;
+        }
+        nav a{
+          padding: 20px;
+        }
+        a{
+          text-decoration: none;
+        }
+        form{
+          padding: 20px;
+        }
+        form input {
+          padding:10px;
+          margin : 0px;
+          width: 30%;
+        }
+        form i{
+          position: absolute;
+          padding: 10px;
+        }
+        #form-name{
+          padding:20px;
+          margin:0px;
+          font-size:25px;
+          letter-spacing: 3px;
+        }
+        form #add-btn{
+          width : 10%;
+          background-color: white;
+          color: black;
+          border: 2px solid #e7e7e7;
+          margin:10px;
+          padding: 10px;
+        }
+        iframe{
+          display: none;
+        }
+      </style>
+</head>
+
+<body>
+<nav>
+    <a href="./index.html">Home</a> |
+    <a href="./input_questions.html">Add Questions</a>
+</nav>
+
+<form name="get_question_form" action='/get_questions' method="GET">
+    <input type="text" name="access_code" placeholder="Enter Access Code"/>
+    <input type="submit" value = "Get Questions" id="add-btn"/>
+</form>
+
+
+<script>
+
+/*
+
+    onclick="validate_send()"
+
+	function validate_send() {
+      event.preventDefault();
+	    var name, age, rollno;
+	    name = document.forms["stud_details"]["name"].value;
+	    age = document.forms["stud_details"]["age"].value;
+	    rollno = document.forms["stud_details"]["rollno"].value;
+
+      // data post
+      url = document.forms["stud_details"].action;
+      data = "name="+name+"&age="+age+"&rollno="+rollno;
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          alert(xhttp.responseText);
+          document.forms["stud_details"].reset();
+        }
+      };
+      xhttp.open("POST", url, true);
+      xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      xhttp.send(data);
+	}
+*/
+</script>
+<iframe name="frame"></iframe>
+</body>
+</html>

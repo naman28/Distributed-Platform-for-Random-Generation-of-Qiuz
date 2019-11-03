@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <style>
+        body{
+          text-align: center;
+          background-color: #f1f1f1;
+        }
+        nav{
+          padding: 20px;
+        }
+        nav a{
+          padding: 20px;
+        }
+        a{
+          text-decoration: none;
+        }
+        form{
+          padding: 20px;
+        }
+        form input {
+          padding:10px;
+          margin : 0px;
+          width: 30%;
+        }
+        form i{
+          position: absolute;
+          padding: 10px;
+        }
+        #form-name{
+          padding:20px;
+          margin:0px;
+          font-size:25px;
+          letter-spacing: 3px;
+        }
+        form #add-btn{
+          width : 10%;
+          background-color: white;
+          color: black;
+          border: 2px solid #e7e7e7;
+          margin:10px;
+          padding: 10px;
+        }
+      </style>
+    </head>
+
+<body>
+  <nav>
+    <a href="./index.html">Home</a> |
+    <a href="./StudentPersonal.html">Enter Student's Personal Info</a> |
+  </nav>
+
+  <p id= "form-name">Question Data:</p>
+
+  <form id="question_form" name="question_details" action='/input_question' method = "POST" target="iframe">
+    
+    <input type="text" name="question" placeholder="Enter Question" required/> <br>
+		<input type="text" name="opt_a" placeholder="Enter option a" required/> <br>
+    <input type="text" name="opt_b" placeholder="Enter option b" required/> <br>
+    <input type="text" name="opt_c" placeholder="Enter option c" required/><br>
+    <input type="text" name="opt_d" placeholder="Enter option d" required/><br> <br>
+    <span>Correct Option :</span>
+    <select name="correct_opt" required>
+      <option value="a">a</option>
+      <option value="b">b</option>
+      <option value="c">c</option>
+      <option value="d">d</option>
+    </select><br><br>
+    <span>Weight of Question : </span>
+    <select name="weight" required>
+      <option value="1">Easy - 1 marks</option>
+      <option value="2">Medium - 2 marks</option>
+      <option value="3">Hard - 3 marks</option>
+    </select><br>
+		<input type="submit" value = "Add Record" id="add-btn"/>
+	</form>
+  <p id="output"></p>
+  
+  
+  <script>
+
+      // this is the id of the form
+      $("#question_form").submit(function(e) {
+      var form = $(this);
+      var url = form.attr('action');
+      var method = form.attr('method')
+      $.ajax({
+          type: method,
+          url: url,
+          data: form.serialize(), // serializes the form's elements.
+          success: function(data){
+          alert(data); // show response .
+          }
+      });
+
+      e.preventDefault(); // avoid to execute the actual submit of the form.
+      });
+   
+</script>
+
+</body>
+</html>

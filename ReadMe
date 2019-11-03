@@ -1,0 +1,98 @@
+/////////////////////////
+Toolkit Required:
+/////////////////////////
+
+1. JDK 1.8
+2. Mariadb
+3. Mariadb-jdbc connector
+4. Intellij IDE
+5. Nginx
+
+/////////////////////////
+Database Tables
+/////////////////////////
+Before running application, we need to create a database and tables for individual server.
+This project sports 4 servers named : a,b,c,d
+For each server x in a,b,c,d, create
+
+Database Name : Question_Bank_x
+Tables : 
+    1) question_details // that contains MCQ questions, its option, correct option, its weight, access_code
+
+        create table question_details (
+            id int unsigned auto_increment not null,
+            question varchar(1000) not null,
+            opt_a varchar(1000) not null,
+            opt_b varchar(1000) not null,
+            opt_c varchar(1000) not null,
+            opt_d varchar(1000) not null,
+            correct_opt varchar(1) not null,
+            weight int not null,
+            access_code varchar(32) not null,
+            primary key (id)
+            );
+
+    2) access_code_rules // that contains rules associated with an access access_code
+
+            create table access_code_rules(
+            access_code varchar(7) not null,
+            easy int not null,
+            medium int not null,
+            hard int not null,
+            primary key (access_code)
+            );
+
+    3) access_code_rules_to_{z} // where z is a sever other than x, create table for each z
+
+            create table access_code_rules_to_{z}(
+            access_code varchar(7) not null,
+            easy int not null,
+            medium int not null,
+            hard int not null,
+            primary key (access_code)
+            );
+
+    4) failed_distribution_to_{z} // where z is a sever other than x, create table for each z
+
+            create table failed_distribution_to_{z} (
+            question varchar(1000) not null,
+            opt_a varchar(1000) not null,
+            opt_b varchar(1000) not null,
+            opt_c varchar(1000) not null,
+            opt_d varchar(1000) not null,
+            correct_opt varchar(1) not null,
+            weight int not null,
+            access_code varchar(32) not null
+            );
+
+////////////////////////
+Database Credentials
+////////////////////////
+This project uses root credentials that is, 
+        username : root 
+        password : <nothing>
+
+
+////////////////////////////
+Runnning the application
+////////////////////////////
+
+Step 1: Open Intellij. Click on File. Click on Open and locate and select "quiz" folder.
+        Navigate down to "server a/my_app". Open  my_app package. Similarly open "server b/my_app",
+        "server c/my_app","server d/my_app" (ALL IN NEW WINDOW) by navigating down the same "quiz" folder.
+
+Step 2: Set jdk and mariadb_connector in classpath of each package.
+Step 3: Select "import changes" in the pop up at lower right corner of window. 
+        This fetches dependencies of the project mentioned in "pom.xml"
+Step 4: Set Language Level 8 in Project Module.
+Step 5: On Mac, Press control+shift+R on individual intellij window run individual package/server. 
+        Alternatively, Click on "run" tab, then click on "run app" to run the app.
+
+Step 6: Replace the nginx configuration file with the provided one at "quiz/nginx.conf".
+Step 7: Start nginx. On Mac by writing the undermentioned command in terminal:
+        $brew services start nginx
+Step 8: Open browser and enter url htto://localhost:8080/
+
+///////////////////////////
+End of ReadMe
+///////////////////////////
